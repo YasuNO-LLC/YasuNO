@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -31,9 +32,15 @@ namespace Yasuno
                     .Select(JsonConvert.SerializeObject)
                     .Select(JsonConvert.DeserializeObject<LobbyStateUpdate>)
                     .Where(state => state?.Data?.Actions != null)
-                    .SelectMany(state => state.Data.Actions)
-                    .SelectMany(actions => actions)
-                    .Where(action => action.ChampionId == NoPicker.Cancer && action.ActionType.Equals("pick", StringComparison.InvariantCultureIgnoreCase))
+                    .SelectMany(
+                        state => state.Data.Actions
+                                      .SelectMany(action => action)
+                                      .Where(action => action.ActorCellId == state.Data.LocalPlayerCellId)
+                    )
+                    .Where(
+                        action => action.ChampionId == NoPicker.Cancer &&
+                                  action.ActionType.Equals("pick", StringComparison.InvariantCultureIgnoreCase)
+                    )
                     .Subscribe(this.OnCancerHovered);
         }
 
@@ -67,14 +74,22 @@ namespace Yasuno
 
                 Debugger.Log(0, "", $"trying to pick champion {champId}\n");
                 await Task.Delay(100);
-                await this._client.ChampSelect.PatchAction(action.Id, action);
-                await this._client.ChampSelect.CompleteAction(action.Id);
+                if (!await this._client.ChampSelect.PatchAction(action.Id, action))
+                {
+                    Debugger.Log(0, "", "failed to select champion\n");
+                }
+
+                if (!await this._client.ChampSelect.CompleteAction(action.Id))
+                {
+                    Debugger.Log(0, "", "failed to lock champion\n");
+                }
             }
         }
 
         private class LobbyState
         {
             [JsonProperty("actions")] public List<List<ChampSelect.PatchActionDto>> Actions { get; set; }
+            [JsonProperty("localPlayerCellId")] public int LocalPlayerCellId { get; set; }
         }
 
         private class LobbyStateUpdate

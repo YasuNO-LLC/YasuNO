@@ -32,7 +32,7 @@ namespace LcuApi
         public async Task<bool> CompleteAction(int actionId)
         {
             var res = await this._client.PostAsync(
-                          "/lol-champ-select/v1/session/actions/1/complete",
+                          $"/lol-champ-select/v1/session/actions/{actionId}/complete",
                           new StringContent("{}", Encoding.UTF8, "application/json")
                       );
 
