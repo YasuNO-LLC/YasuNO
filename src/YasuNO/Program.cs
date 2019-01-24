@@ -14,7 +14,7 @@ namespace Yasuno
                 {
                     var notifyIcon = new NotifyIcon
                                      {
-                                         Icon = Resources.Icon1,
+                                         Icon = Resources.NOYasuo_1,
                                          Text = "YasuNO",
                                          BalloonTipText = "YasuNO is now protecting you from yourself",
                                          Visible = true

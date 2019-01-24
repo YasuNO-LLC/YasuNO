@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YasuNO", "YasuNO\YasuNO.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LcuApi", "LcuApi\LcuApi.csproj", "{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "YasuNOSetup", "YasuNOSetup\YasuNOSetup.wixproj", "{F383D358-B634-47D6-801C-60A53015AF23}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,9 @@ Global
 		{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F383D358-B634-47D6-801C-60A53015AF23}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F383D358-B634-47D6-801C-60A53015AF23}.Release|Any CPU.ActiveCfg = Release|x86
+		{F383D358-B634-47D6-801C-60A53015AF23}.Release|Any CPU.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

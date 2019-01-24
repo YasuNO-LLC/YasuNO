@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="YasuNO" Language="1033" Version="1.0.0.0" Manufacturer="pseudonym117" UpgradeCode="9cf1d548-6e4b-4bd9-bc61-0a7fe37ae39b">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine"
+             Description="YasuNO" Comments="Improve your rank!" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="YasuNO" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="DesktopFolder" Name="Desktop" />
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="YasuNO" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+  <?define SourceDir="$(var.SolutionDir)YasuNO/bin/$(var.Configuration)/"?>
+
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <Component Id="YasuNoExe">
+        <File Id="YasuNO.exe" Name="YasuNO.exe" Source="$(var.SourceDir)YasuNO.exe"/>
+      </Component>
+      <Component Id="YasuNoExeConfig">
+        <File Id='YasuNO.exe.config'  Name='YasuNO.exe.config' Source='$(var.SourceDir)YasuNO.exe.config'/>
+			</Component>
+      <Component Id="YasuNOStartShortcut" Guid="B1581B4F-419D-4B57-B283-0BA38BC919F2">
+        <Shortcut Id="DesktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="YasuNO"
+                  Target="[#YasuNO.exe]"
+                  Description="Improve your rank!"
+                  WorkingDirectory="INSTALLFOLDER"/>
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\YasuNO" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+      <Component Id="LcuApiDll">
+        <File Id='LcuApi.dll'  Name='LcuApi.dll' Source='$(var.SourceDir)LcuApi.dll'/>
+      </Component>
+      <Component Id="LcuApiDllConfig">
+        <File Id='LcuApi.dll.config'  Name='LcuApi.dll.config' Source='$(var.SourceDir)LcuApi.dll.config'/>
+      </Component>
+      <Component Id='Dependencies' Guid='AFA3020B-EBC3-4625-863A-8E181E444288'>
+        <File Id='Newtonsoft.Json.dll' Name='Newtonsoft.Json.dll' Source='$(var.SourceDir)Newtonsoft.Json.dll'/>
+        <File Id='System.Data.Common.dll' Name='System.Data.Common.dll' Source='$(var.SourceDir)System.Data.Common.dll'/>
+        <File Id='System.Diagnostics.DiagnosticSource.dll' Name='System.Diagnostics.DiagnosticSource.dll' Source='$(var.SourceDir)System.Diagnostics.DiagnosticSource.dll'/>
+        <File Id='System.Diagnostics.StackTrace.dll' Name='System.Diagnostics.StackTrace.dll' Source='$(var.SourceDir)System.Diagnostics.StackTrace.dll'/>
+        <File Id='System.Diagnostics.Tracing.dll' Name='System.Diagnostics.Tracing.dll' Source='$(var.SourceDir)System.Diagnostics.Tracing.dll'/>
+        <File Id='System.Globalization.Extensions.dll' Name='System.Globalization.Extensions.dll' Source='$(var.SourceDir)System.Globalization.Extensions.dll'/>
+        <File Id='System.IO.Compression.dll' Name='System.IO.Compression.dll' Source='$(var.SourceDir)System.IO.Compression.dll'/>
+        <File Id='System.Net.Http.dll' Name='System.Net.Http.dll' Source='$(var.SourceDir)System.Net.Http.dll'/>
+        <File Id='System.Net.Sockets.dll' Name='System.Net.Sockets.dll' Source='$(var.SourceDir)System.Net.Sockets.dll'/>
+        <File Id='System.Reactive.Core.dll' Name='System.Reactive.Core.dll' Source='$(var.SourceDir)System.Reactive.Core.dll'/>
+        <File Id='System.Reactive.dll' Name='System.Reactive.dll' Source='$(var.SourceDir)System.Reactive.dll'/>
+        <File Id='System.Reactive.Interfaces.dll' Name='System.Reactive.Interfaces.dll' Source='$(var.SourceDir)System.Reactive.Interfaces.dll'/>
+        <File Id='System.Reactive.Linq.dll' Name='System.Reactive.Linq.dll' Source='$(var.SourceDir)System.Reactive.Linq.dll'/>
+        <File Id='System.Runtime.CompilerServices.Unsafe.dll' Name='System.Runtime.CompilerServices.Unsafe.dll' Source='$(var.SourceDir)System.Runtime.CompilerServices.Unsafe.dll'/>
+        <File Id='System.Runtime.Serialization.Primitives.dll' Name='System.Runtime.Serialization.Primitives.dll' Source='$(var.SourceDir)System.Runtime.Serialization.Primitives.dll'/>
+        <File Id='System.Security.Cryptography.Algorithms.dll' Name='System.Security.Cryptography.Algorithms.dll' Source='$(var.SourceDir)System.Security.Cryptography.Algorithms.dll'/>
+        <File Id='System.Security.SecureString.dll' Name='System.Security.SecureString.dll' Source='$(var.SourceDir)System.Security.SecureString.dll'/>
+        <File Id='System.Threading.Overlapped.dll' Name='System.Threading.Overlapped.dll' Source='$(var.SourceDir)System.Threading.Overlapped.dll'/>
+        <File Id='System.Threading.Tasks.Extensions.dll' Name='System.Threading.Tasks.Extensions.dll' Source='$(var.SourceDir)System.Threading.Tasks.Extensions.dll'/>
+        <File Id='System.ValueTuple.dll' Name='System.ValueTuple.dll' Source='$(var.SourceDir)System.ValueTuple.dll'/>
+        <File Id='System.Xml.XPath.XDocument.dll' Name='System.Xml.XPath.XDocument.dll' Source='$(var.SourceDir)System.Xml.XPath.XDocument.dll'/>
+      </Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
