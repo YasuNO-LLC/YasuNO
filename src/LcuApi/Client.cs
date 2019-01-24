@@ -42,10 +42,10 @@ namespace LcuApi
         private Replays _replays;
         private Summoner _summoner;
 
-        private Client(HttpClient client, ClientWebSocket socket)
+        private Client(HttpClient client, ClientWebSocket socket, CancellationToken token)
         {
             this._httpClient = client;
-            this._listener = new LcuApiListener(socket);
+            this._listener = new LcuApiListener(socket, token);
 
             this._listener.Disconnected += this.OnListenerOnDisconnected;
         }
@@ -66,88 +66,106 @@ namespace LcuApi
             this._httpClient?.Dispose();
         }
 
-        public static async Task<Client> Connect()
+        public static async Task<Client> Connect(CancellationToken token)
         {
-            while (true)
+            try
             {
-                var clientProcess = await Client.GetLeagueClientProcess();
-
-                var match = Client.InstallDirectoryRegex.Match(clientProcess.GetCommandLine());
-                var installDirectory = match.Groups["path"];
-
-                var lockfile = $"{installDirectory}lockfile";
-
-                if (File.Exists(lockfile))
+                while (!token.IsCancellationRequested)
                 {
-                    string lockText;
-                    using (var lockfileStream = new FileStream(
-                        lockfile,
-                        FileMode.Open,
-                        FileAccess.Read,
-                        FileShare.ReadWrite
-                    ))
+                    var clientProcess = await Client.GetLeagueClientProcess(token);
+
+                    var match = Client.InstallDirectoryRegex.Match(clientProcess.GetCommandLine());
+                    var installDirectory = match.Groups["path"];
+
+                    var lockfile = $"{installDirectory}lockfile";
+
+                    if (File.Exists(lockfile))
                     {
-                        using (var textStream = new StreamReader(lockfileStream))
+                        string lockText;
+                        using (var lockfileStream = new FileStream(
+                            lockfile,
+                            FileMode.Open,
+                            FileAccess.Read,
+                            FileShare.ReadWrite
+                        ))
                         {
-                            lockText = await textStream.ReadToEndAsync();
+                            using (var textStream = new StreamReader(lockfileStream))
+                            {
+                                lockText = await textStream.ReadToEndAsync();
+                            }
                         }
+
+                        var parts = lockText.Split(':');
+
+                        var args = new ClientArgs
+                                   {
+                                       Process = parts[0],
+                                       Pid = int.Parse(parts[1]),
+                                       Port = ushort.Parse(parts[2]),
+                                       Password = parts[3],
+                                       Protocol = parts[4]
+                                   };
+
+                        var connectionString = $"127.0.0.1:{args.Port}/";
+                        var client = new HttpClient
+                                     {
+                                         BaseAddress = new Uri($"{args.Protocol}://{connectionString}"),
+                                         DefaultRequestHeaders =
+                                         {
+                                             {
+                                                 "Authorization",
+                                                 $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{args.Password}"))}"
+                                             }
+                                         }
+                                     };
+                        var socket = new ClientWebSocket();
+
+                        var uri = new Uri($"wss://{connectionString}");
+                        socket.Options.UseDefaultCredentials = false;
+                        socket.Options.SetRequestHeader(
+                            "Authorization",
+                            $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{args.Password}"))}"
+                        );
+                        await socket.ConnectAsync(uri, token);
+
+                        return new Client(client, socket, token);
                     }
 
-                    var parts = lockText.Split(':');
-
-                    var args = new ClientArgs
-                               {
-                                   Process = parts[0],
-                                   Pid = int.Parse(parts[1]),
-                                   Port = ushort.Parse(parts[2]),
-                                   Password = parts[3],
-                                   Protocol = parts[4]
-                               };
-
-                    var connectionString = $"127.0.0.1:{args.Port}/";
-                    var client = new HttpClient
-                                 {
-                                     BaseAddress = new Uri($"{args.Protocol}://{connectionString}"),
-                                     DefaultRequestHeaders =
-                                     {
-                                         {
-                                             "Authorization",
-                                             $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{args.Password}"))}"
-                                         }
-                                     }
-                                 };
-                    var socket = new ClientWebSocket();
-
-                    var uri = new Uri($"wss://{connectionString}");
-                    socket.Options.UseDefaultCredentials = false;
-                    socket.Options.SetRequestHeader(
-                        "Authorization",
-                        $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"riot:{args.Password}"))}"
-                    );
-                    await socket.ConnectAsync(uri, CancellationToken.None);
-
-                    return new Client(client, socket);
+                    await Task.Delay(1000, token);
                 }
-
-                await Task.Delay(1000);
             }
+            catch (TaskCanceledException )
+            {
+                return null;
+            }
+
+            return null;
         }
 
-        private static async Task<Process> GetLeagueClientProcess()
+        private static async Task<Process> GetLeagueClientProcess(CancellationToken token)
         {
-            while (true)
+            try
             {
-                var clientProcess = Process
-                                    .GetProcesses()
-                                    .FirstOrDefault(process => process.ProcessName == Client.ClientName);
-
-                if (clientProcess != null)
+                while (!token.IsCancellationRequested)
                 {
-                    return clientProcess;
-                }
+                    var clientProcess = Process
+                                        .GetProcesses()
+                                        .FirstOrDefault(process => process.ProcessName == Client.ClientName);
 
-                await Task.Delay(1000);
+                    if (clientProcess != null)
+                    {
+                        return clientProcess;
+                    }
+
+                    await Task.Delay(1000, token);
+                }
             }
+            catch (TaskCanceledException)
+            {
+                return null;
+            }
+
+            return null;
         }
 
         private void OnListenerOnDisconnected(object sender, bool data)

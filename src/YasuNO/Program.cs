@@ -1,8 +1,7 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Windows.Forms;
 
-using LcuApi;
+using Yasuno.Properties;
 
 namespace Yasuno
 {
@@ -10,53 +9,28 @@ namespace Yasuno
     {
         private static void Main(string[] args)
         {
-            Program.MainAsync(args).Wait();
-        }
+            var notifyThread = new Thread(
+                () =>
+                {
+                    var notifyIcon = new NotifyIcon
+                                     {
+                                         Icon = Resources.Icon1,
+                                         Text = "YasuNO",
+                                         BalloonTipText = "YasuNO is now protecting you from yourself",
+                                         Visible = true
+                                     };
 
-        private static async Task MainAsync(string[] args)
-        {
-            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, errors) => true;
+                    notifyIcon.ShowBalloonTip(2);
+                    Application.Run();
+                }
+            );
 
-            while (true)
+            notifyThread.SetApartmentState(ApartmentState.STA);
+            notifyThread.Start();
+
+            using (new YasuNo())
             {
-                try
-                {
-                    using (var client = await Client.Connect())
-                    {
-                        var connected = true;
-
-                        void OnClientOnDisconnected(object sender, bool e)
-                        {
-                            connected = false;
-                        }
-
-                        client.Disconnected += OnClientOnDisconnected;
-
-                        Console.WriteLine("Connected to league!");
-
-                        while (await client.Summoner.CurrentSummoner() == null)
-                        {
-                            // wait until logged in
-                            await Task.Delay(5000);
-                        }
-
-                        using (new NoPicker(client))
-                        {
-                            while (connected)
-                            {
-                                await Task.Delay(1000);
-                            }
-                        }
-
-                        client.Disconnected -= OnClientOnDisconnected;
-
-                        Console.WriteLine("Disconnected from league");
-                    }
-                }
-                catch (Exception e)
-                {
-                    await Console.Error.WriteLineAsync(e.Message);
-                }
+                notifyThread.Join();
             }
         }
     }

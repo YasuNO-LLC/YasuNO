@@ -14,7 +14,7 @@ namespace LcuApi
 {
     public class LcuApiListener : IDisposable
     {
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _token;
 
         private readonly Task _listeningTask;
 
@@ -22,9 +22,10 @@ namespace LcuApi
 
         private readonly ClientWebSocket _socket;
 
-        public LcuApiListener(ClientWebSocket socket)
+        public LcuApiListener(ClientWebSocket socket, CancellationToken token)
         {
             this._socket = socket ?? throw new ArgumentNullException(nameof(socket));
+            this._token = token;
 
             this._observables = new ConcurrentDictionary<string, Subject<object>>();
 
@@ -32,14 +33,14 @@ namespace LcuApi
                 async () =>
                 {
                     var arr = new byte[1024 * 1024];
-                    while (!this._cancellationTokenSource.IsCancellationRequested)
+                    while (!this._token.IsCancellationRequested)
                     {
                         try
                         {
                             Array.Clear(arr, 0, arr.Length);
                             var res = await socket.ReceiveAsync(
                                           new ArraySegment<byte>(arr),
-                                          this._cancellationTokenSource.Token
+                                          this._token
                                       );
 
                             if (!res.EndOfMessage)
@@ -68,7 +69,6 @@ namespace LcuApi
                         catch (WebSocketException)
                         {
                             this.Disconnected?.Invoke(this, true);
-                            this._cancellationTokenSource.Cancel();
                             return;
                         }
                         catch (Exception)
@@ -77,13 +77,12 @@ namespace LcuApi
                         }
                     }
                 },
-                this._cancellationTokenSource.Token
+                this._token
             );
         }
 
         public void Dispose()
         {
-            this._cancellationTokenSource.Cancel();
             foreach (var observable in this._observables)
             {
                 observable.Value.Dispose();
@@ -94,7 +93,6 @@ namespace LcuApi
             this._listeningTask.Wait();
             this._listeningTask.Dispose();
             this._socket.Dispose();
-            this._cancellationTokenSource.Dispose();
         }
 
         public event EventHandler<bool> Disconnected;
@@ -113,12 +111,12 @@ namespace LcuApi
                         ),
                         WebSocketMessageType.Text,
                         true,
-                        this._cancellationTokenSource.Token
+                        this._token
                     );
 
                     var subject = new Subject<object>();
 
-                    subscribeTask.Wait(this._cancellationTokenSource.Token);
+                    subscribeTask.Wait(this._token);
 
                     return subject;
                 }
