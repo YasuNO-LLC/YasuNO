@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueBoost", "LeagueBoost\LeagueBoost.csproj", "{CAB09781-C8E4-42D7-91A3-2453E9774A95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YasuNO", "YasuNO\YasuNO.csproj", "{CAB09781-C8E4-42D7-91A3-2453E9774A95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LcuApi", "LcuApi\LcuApi.csproj", "{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{CAB09781-C8E4-42D7-91A3-2453E9774A95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAB09781-C8E4-42D7-91A3-2453E9774A95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAB09781-C8E4-42D7-91A3-2453E9774A95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D5CF4B4-AAEA-4514-BF2F-8738362B947B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
