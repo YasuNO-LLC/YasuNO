@@ -1,6 +1,6 @@
 # YasuNO
 
-Are you a Yasuo main? Is your rank suffering as a result? Are you unable to stop playing Yasuo? Well look no further, because YasuoNO will solve all of these problems!
+Are you a Yasuo main? Is your rank suffering as a result? Are you unable to stop playing Yasuo? Well look no further, because YasuNO will solve all of these problems!
 
 YasuNO is a tool that improves your winrate by preventing you from picking Yasuo in champion select, which significantly decreases how easily you can feed.
 If you try to pick Yasuo in champion select, it will automatically change your pick to a different champion.
