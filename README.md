@@ -4,7 +4,7 @@ Are you a Yasuo main? Is your rank suffering as a result? Are you unable to stop
 
 YasuNO is a tool that improves your winrate by preventing you from picking Yasuo in champion select, which significantly decreases how easily you can feed.
 If you try to pick Yasuo in champion select, it will automatically change your pick to a different champion.
-YasuoNO improves more than just your own League of Legends experience: it improves the experiences of your opponents by letting them play against a champion that isn't bullshit, and improves the experiences of your 4 random teammates (let's face it, you have no friends to play together with) by allowing them to play a proper 5v5 where 1 of their allies doesn't just int all game.
+YasuNO improves more than just your own League of Legends experience: it improves the experiences of your opponents by letting them play against a champion that isn't bullshit, and improves the experiences of your 4 random teammates (let's face it, you have no friends to play together with) by allowing them to play a proper 5v5 where 1 of their allies doesn't just int all game.
 
 ## Credits
 
