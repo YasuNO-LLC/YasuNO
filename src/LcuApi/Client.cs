@@ -77,7 +77,7 @@ namespace LcuApi
                     var match = Client.InstallDirectoryRegex.Match(clientProcess.GetCommandLine());
                     var installDirectory = match.Groups["path"];
 
-                    var lockfile = $"{installDirectory}lockfile";
+                    var lockfile = $"{installDirectory}\\lockfile";
 
                     if (File.Exists(lockfile))
                     {

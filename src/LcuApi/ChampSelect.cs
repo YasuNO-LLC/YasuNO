@@ -42,12 +42,11 @@ namespace LcuApi
         public async Task<List<int>> PickableChampions()
         {
             var res = await this._client.GetAsync(
-                          "/lol-champ-select/v1/pickable-champions",
+                          "/lol-champ-select/v1/pickable-champion-ids",
                           CancellationToken.None
                       );
 
-            return JsonConvert.DeserializeObject<PickableChampionsDto>(await res.Content.ReadAsStringAsync())
-                              ?.ChampionIds;
+            return JsonConvert.DeserializeObject<List<int>>(await res.Content.ReadAsStringAsync());
         }
 
         public class PatchActionDto
@@ -65,9 +64,5 @@ namespace LcuApi
             [JsonProperty("type")] public string ActionType { get; set; }
         }
 
-        private class PickableChampionsDto
-        {
-            [JsonProperty("championIds")] public List<int> ChampionIds { get; set; }
-        }
     }
 }
