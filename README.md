@@ -22,7 +22,7 @@ Anyone who doesn't play Yasuo: Not being sub-human filth
 ## FAQ
 
 ### How install?
-Go to https://github.com/pseudonym117/YasuNO/releases, install msi.
+Go to https://github.com/YasuNO-LLC/YasuNO/releases, install msi.
 
 ### Is it effective at improving win rates?
 We have found it to be at least as effective as placebos (n = 0).
